@@ -64,3 +64,16 @@ ROUND(function, decimalnumber) on top of the previous functions, will round up t
 > WHERE staff_id = 2
 > GROUP BY customer_id
 > HAVING SUM(amount) >100
+
+
+
+## JOIN
+
+### As clause
+As functions at the end of each query. So it doesn't work inside a "WHERE" clause. 
+For example, the following command won't work
+> SELECT customer_id, SUM(amount) AS total_spent
+> FROM payment
+> GROUP BY customer_id
+> HAVING total_spent > 100   
+*instead we should use SUM(amount) in the having clause*
