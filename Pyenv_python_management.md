@@ -42,6 +42,11 @@ Or to be more explicite: 1) pyenv should activate a virtualenv, which could be d
 # github fatal error: repo not found
 This is mainly due to your authentification process to github is forgot? or lost? 
 The way to fix it is: `git remote set-url origin https://YOUR-GIT-Username@github.com/organization/repo.git`
+I had a case where this solution didn't even work, so I used another approach described in this link: https://stackoverflow.com/questions/22844806/how-to-change-my-git-username-in-terminal
+> git config user.email "you@example.com"
+> git config user.name "Your Name"
+> git config user.password "your password"
+But maybe I will need some other ways to crack it sometime.
 
 
 
