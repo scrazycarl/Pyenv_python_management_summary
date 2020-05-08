@@ -192,4 +192,4 @@ the above query, extracted payment which happened on Monday. So the SQL index st
 ### Math in SQL
 It's just using normal math operations between columns.
 > SELECT ROUND (rental_rate/replacement_cost, 4)*100  > AS percent_cost
-> FROM FILM
+> FROM FILMgit remote set-url origin https://github.com/USERNAME/REPOSITORY.git
