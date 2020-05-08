@@ -225,5 +225,5 @@ the above query, extracted payment which happened on Monday. So the SQL index st
 It's just using normal math operations between columns.
 ```SQL
 SELECT ROUND (rental_rate/replacement_cost, 4)*100  > AS percent_cost
-FROM FILMgit remote set-url origin https://github.com/USERNAME/REPOSITORY.git
+FROM FILM
 ```
