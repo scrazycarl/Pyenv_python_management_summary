@@ -227,3 +227,53 @@ It's just using normal math operations between columns.
 SELECT ROUND (rental_rate/replacement_cost, 4)*100  > AS percent_cost
 FROM FILM
 ```
+
+### String Functions
+
+There are normal string functions like other programming languages in SQL. 
+Check it out here: [SQL String Funcitons]https://www.postgresql.org/docs/9.1/functions-string.html
+
+```sql
+SELECT first_name|| '-- ' ||last_name
+FROM customer
+```
+
+```sql
+SELECT LOWER(left(first_name,2)) || LOWER(right(last_name,3)) || '@gmail.com'
+AS customer_email
+FROM customer
+```
+### SUBQUERY
+
+Basically 2 ways to do it: 1) Insert it with parenthesis 2) Use ```IN``` command for it
+
+```sql
+SELECT title, rental_rate
+FROM film
+WHERE rental_rate>(SELECT AVG(rental_rate) FROM film)
+```
+This is still okay when subqueries returns only 1 value, but if it returns multiple value, use ```IN```
+
+
+Using ```EXIST` is a smart way to using information from another table, but avoid joining them.
+
+```sql
+SELECT first_name, last_name
+FROM customer AS C
+WHERE NOT EXISTS
+(SELECT * FROM payment as P
+WHERE p.customer_id=c.customer_id
+AND amount>11)
+```
+But if you have need information from more than 1 table in the subquery, you need to use ```IN``` + ```JOIN```, for example
+
+```sql
+SELECT film_id,title
+FROM film
+WHERE film_id IN
+(SELECT inventory.film_id
+FROM rental
+INNER JOIN inventory ON inventory.inventory_id=rental.inventory_id
+WHERE return_date BETWEEN '2005-05-29' AND '2005-05-30')
+ORDER BY title
+```
