@@ -36,15 +36,18 @@ SELECT * FROM payment
 WHERE amount IN (0.99,1.95,1.8)
 ORDER BY amount
 ```
+
 ### Another way of matching: wildcared character "%", "_"
 
 '%' represents more characters, '_' represents 1 character
 
 e.g:
+
 ```sql
 SELECT * FROM customer
 WHERE first_name LIKE 'S%' AND last_name LIKE 'J%'
 ```
+
 'LIKE' is case sensitive on matching characters. 'ILIKE' is case insensitive 
 
 ```sql
@@ -53,6 +56,7 @@ WHERE first_name LIKE 'S%' AND last_name LIKE 'J%'
 ```
 
 ## GROUP BY
+
 Aggregate functions are: AVG(), COUNT(), MAX(), MIN(), SUM(), *ONLY used in SELECT or HAVING*
 ROUND(function, decimalnumber) on top of the previous functions, will round up the result number
 
@@ -67,6 +71,7 @@ SELECT customer_id, staff_id, SUM(amount) FROM payment
 GROUP BY customer_id, staff_id
 ORDER BY SUM(amount)    *The things that you used in "ORDER BY", needs to be used in SELECT before*
 ```
+
 *Special notice: for date format, you need to transform it before you use it to order"
 
 ```sql
@@ -74,6 +79,7 @@ SELECT DATE(payment_date), SUM(amount) FROM payment
 GROUP BY DATE(payment_date)
 ORDER BY SUM(amount)
 ```
+
 #### Filtering on Groupby 
 
 ```sql
@@ -96,12 +102,14 @@ HAVING SUM(amount) >100
 
 As functions at the end of each query. So it doesn't work inside a "WHERE" clause. 
 For example, the following command won't work
+
 ```sql
 SELECT customer_id, SUM(amount) AS total_spent
 FROM payment
 GROUP BY customer_id
 HAVING total_spent > 100   
 ```
+
 *instead we should use SUM(amount) in the having clause*
 
 ### Inner join
@@ -111,6 +119,7 @@ SELECT * FROM Table_A
 INNER JOIN Table_B
 ON Table_B.col_to_match=Table_A.col_to_match
 ```
+
 You can also specify the columns taken from each table as following. If the table you select only exits in one of the table.
 Then no need to specify. 
 
@@ -120,6 +129,7 @@ SELECT staff.last_update, staff.username,staff.first_name FROM staff
 INNER JOIN actor
 ON actor.first_name=staff.first_name
 ```
+
 #### Key points to high light:
 
 1. The order of two tables to join doesn't matter
@@ -130,6 +140,7 @@ ON actor.first_name=staff.first_name
 ### Outer join: allows two columns have different value 
 
 This gives you full outer join: 
+
 ```sql
 SELECT * FROM customer FULL OUTER JOIN payment
 ON customer.customer_id=payment.customer_id 
@@ -139,6 +150,7 @@ ON customer.customer_id=payment.customer_id
 then it will be filled with null*
 
 This following query is the exactly the opposite of inner join:
+
 ```sql
 SELECT * FROM customer FULL OUTER JOIN payment
 ON customer.customer_id=payment.customer_id 
@@ -157,7 +169,9 @@ LEFT JOIN inventory ON
 inventory.film_id=film.film_id
 WHERE inventory.film_id IS NULL
 ```
+
 And the exact reverse of Left outer join is right outer join, or switching the order of table in left outer join
+
 ```sql
 SELECT film.film_id, film.title, inventory_id
 FROM film
@@ -165,11 +179,13 @@ RIGHT OUTER JOIN inventory ON
 inventory.film_id=film.film_id
 WHERE inventory.film_id IS NULL
 ```
+
 ### Union
 
 ### Consecutive inner join 
 
 The following two quires are identical:
+
 ```sql
 SELECT first_name,last_name,title,film.film_id FROM actor
 INNER JOIN film_actor
@@ -188,6 +204,7 @@ WHERE first_name = 'Nick'and last_name='Wahlberg') as target_film
 INNER JOIN film
 ON target_film.film_id=film.film_id
 ```
+
 ## Advanced SQL query
 
 Time information type. The difference matters when you want to design a database
@@ -207,23 +224,29 @@ SELECT CURRENT_DATE
 ```
 
 An example of TO_CHAR: 
+
 ```sql
 SELECT TO_CHAR(payment_date,'MM/dd/YYYY')
 FROM payment
 ```
+
 *https://www.postgresql.org/docs/12/functions-formatting.html*
 
 _Extract day information from date_:dow keyword
+
 ```sql
 SELECT COUNT(payment_id) FROM payment
 WHERE EXTRACT(dow FROM payment_date)=1
 ```
+
 the above query, extracted payment which happened on Monday. So the SQL index start from Sunday as 0, Monday as 1.
 
 
 ### Math in SQL
+
 It's just using normal math operations between columns.
-```SQL
+
+```sql
 SELECT ROUND (rental_rate/replacement_cost, 4)*100  > AS percent_cost
 FROM FILM
 ```
@@ -243,6 +266,7 @@ SELECT LOWER(left(first_name,2)) || LOWER(right(last_name,3)) || '@gmail.com'
 AS customer_email
 FROM customer
 ```
+
 ### SUBQUERY
 
 Basically 2 ways to do it: 1) Insert it with parenthesis 2) Use ```IN``` command for it
@@ -287,3 +311,156 @@ INNER JOIN film AS f2 ON
 f1.film_id != f2.film_id
 AND f1.length=f2.length
 ```
+
+
+## Constraints
+
+1. Column constraints 
+
+```sql
+1. Not Null
+```
+
+```sql
+UNIQUE
+```
+
+```sql
+CHECK
+```
+
+```sql
+EXCLUSION
+```
+
+2. Table constraints
+
+```sql
+UNIQUE (column_list)
+```
+
+```sql
+PRIMARY KEY (column_list)
+```
+
+## Table operations 
+
+1. Create
+```sql
+CREATE TABLE table_name(
+column_name TYPE column_constraint,
+column_name TYPE column_constraint,
+)
+```
+
+TYPE: 
+*SERIAL* There are different length of serial that , 
+
+```sql
+CREATE TABLE account(
+	user_id SERIAL PRIMARY KEY,
+	username VARCHAR (50) UNIQUE NOT NULL,
+	password VARCHAR(50) NOT NULL,
+	email VARCHAR(30) UNIQUE NOT NULL,
+	created_on TIMESTAMP NOT NULL,
+	last_login TIMESTAMP
+	)
+```
+
+```sql
+CREATE TABLE account_job(
+	user_id INTEGER REFERENCES account(user_id)
+)
+```
+
+2. Insert
+
+```sql
+INSERT INTO table(column_1, column_2)
+VALUES
+(Value_1, Value_2)
+```
+
+3. Update
+
+```sql
+UPDATE TABLE
+SET column1=value1, 
+column2=value2
+WHERE
+condition
+```
+
+```sql
+UPDATE account
+SET last_login=CURRENT_TIMESTAMP
+WHERE last_login=NULL
+```
+
+```sql
+UPDATE TABLEA
+SET original_col=TableB.new_col
+FROM table_B
+WHERE tableA_id=TableB_id
+```
+eg:
+
+```sql
+UPDATE account_job
+SET hire_date=account.created_on
+FROM account
+WHERE account_job.user_id=account.user_id
+```
+
+You can also show all the rows affected by return
+
+```sql
+UPDATE Account
+SET last_login=created_on,
+RETURNING account_id, last_login
+```
+
+eg:
+
+```sql
+UPDATE account
+SET last_login=CURRENT_TIMESTAMP
+RETURNING email,created_on,last_login
+```
+
+4. DELETE
+
+```sql
+DELETE FROM employees
+WHERE emp_id=2
+```
+
+```SQL
+DELETE FROM TableA
+USING TableB
+WHERE TableA.id=TableB.id
+```
+
+
+
+
+4. Alter Table
+
+The following command examples are alternative command available for the ```ALTER TABLE``` command
+
+```sql
+ALTER TABLE table_name
+RENAME TO 
+ALTER COLUMN col_name
+    ADD COLUMN col_name TYPE
+    DROP COLUMN col_name
+    SET DEFAULT value
+    DROP DEFAULT
+    SET NOT NULL
+    DROP NOT NULL
+    ADD CONSTRAINT constraint_name
+```
+
+5. Check Constraints 
+
+Setting constraints on conditions in relation to other oclumn
