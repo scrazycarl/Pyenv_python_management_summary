@@ -477,3 +477,80 @@ hire_date DATE CHECK (hire_date > birthday),
 salary INTEGER CHECK (salary > 0)
 )
 ```
+
+## Conditional expression
+
+Case, Coalesce, Cast, Nullif,Views, Import and Export
+
+1. Case
+
+```sql
+SELECT a
+CASE WHEN a = 1 THEN 'one',
+     WHEN a = 2 THEN 'two'
+ELSE 'other' AS label
+END
+FROM test;
+```
+
+CASE syntax (abov) VS Case Expression (Following)
+
+So as shown above, **in this way, you don't need to know the existing value for a**
+
+```sql
+SELECT a 
+    CASE a WHEN 1 THEN 'ONE'
+        WHEN 2 THEN 'two'
+        ELSE 'other'
+    END
+FROM test;
+```
+
+The unique value of 'case' keywords is to perform multiple action on same column and return result
+
+eg:
+
+```sql
+SELECT 
+SUM(CASE rating
+	WHEN 'R' THEN 1
+	ELSE 0
+   END) AS r,
+SUM(CASE rating
+    WHEN 'PG' THEN 1
+   ELSE 0
+   END) AS pg,
+SUM(CASE rating
+   WHEN 'PG-13' THEN 1
+   ELSE 0
+   END) AS pg13
+FROM film
+```
+
+2. Coalesce: use this to replace null values, without altering the original data
+
+EG: in the following example, there is null values in ```DISCOUNT```, that's why COALESCE is applied there to substitue ```nul``` with ```0```
+
+```SQL
+SELECT item, (price - COALESCE(discount,0))
+AS final FROM TABLE
+```
+
+2. CAST: convert datatype from one to another
+
+```sql
+SELECT CAST ('5' AS INTEGER)
+```
+
+```sql
+SELECT '5' :: INTEGER
+```
+
+```sql
+SELECT CAST (DATE AS TIMESTAMP)
+FROM table
+```
+
+```sql
+SELECT CHAR_LENGTH (CAST(inventory_id AS VARCHAR)) FROM rental
+```
