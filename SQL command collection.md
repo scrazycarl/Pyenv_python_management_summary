@@ -554,3 +554,34 @@ FROM table
 ```sql
 SELECT CHAR_LENGTH (CAST(inventory_id AS VARCHAR)) FROM rental
 ```
+
+3.NULLIF: return null if the first value matches with second, otherwise, the first value
+```sql
+NULLIF(lastname, 0)
+```
+
+4. Views: a table that you always join together, then why not just save it as views
+
+```sql
+CREATE VIEW customer_info AS
+SELECT customer.first_name, last_name, address FROM customer
+INNER JOIN address
+ON customer.address_id=address.address_id
+```
+
+```sql
+CREATE OR REPLACE VIEW customer_info AS
+```
+
+```SQL
+DROP VIEW IF EXISTS customer_info
+```
+
+```sql
+ALTER VIEW customer_info
+RENAME TO
+```
+
+### Import and Export
+
+Importing CSV files doesn't automatically create a table. You can only copy it to an existing table.
